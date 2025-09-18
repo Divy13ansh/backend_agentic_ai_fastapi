@@ -17,7 +17,7 @@ app.add_middleware(
 
 class QueryRequest(BaseModel):
     query: str
-    dataset_name: Optional[str] = "my_json_collection"
+    dataset_name: Optional[str] = "Zomato"
 
 @app.post("/query")
 async def query_endpoint(request: QueryRequest):
@@ -33,7 +33,10 @@ async def add_dataset(file: Annotated[UploadFile, File()]):
     content_type = file.content_type
     contents = await file.read()
     ingest_data(contents, filename)
-    return {"message": f"Dataset '{filename}' ingested successfully."}
+    return {
+        "message": f"Dataset '{filename}' ingested successfully.",
+        "dataset": filename
+    }
 
 @app.get("/health")
 async def health():
@@ -52,8 +55,13 @@ async def root():
 
 @app.post("/decision_maker")
 async def decision_maker_endpoint(request: QueryRequest):
-    return decision_maker(request.query, request.dataset_name)
-
+    try:
+        result = decision_maker(request.query, request.dataset_name)
+        if "error" in result:
+            return {"error": result["error"]}
+        return result
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # if __name__ == "__main__":
