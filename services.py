@@ -213,20 +213,13 @@ def decision_maker(query, dataset_name="my_json_collection"):
         metadata = {
             "source_documents": [
                 {
-                    "title": doc.metadata.get("title", "Unknown"),
-                    "source": doc.metadata.get("source", "Unknown"),
-                    "pages": doc.metadata.get("pages", []),
+                    # "title": doc.metadata.get("title", "Unknown"),
+                    # "source": doc.metadata.get("source", "Unknown"),
+                    "pages": doc.metadata.get("page", [])
                 }
                 for doc in stage1["source_documents"]
             ],
-            "context_docs": [
-                {
-                    "title": doc.metadata.get("title", "Unknown"),
-                    "source": doc.metadata.get("source", "Unknown"),
-                }
-                for doc in context_results
-            ],
-            "dataset_used": dataset_name,
+            "dataset_used": dataset_name
         }
 
         # Final response
